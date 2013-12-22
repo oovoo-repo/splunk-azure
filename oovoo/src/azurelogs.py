@@ -84,7 +84,7 @@ def main(argv):
 	
 	try:
 		config = ConfigParser.ConfigParser()
-		config.read(scriptHome + '/config/app.conf'])
+		config.read([scriptHome + '/config/app.conf'])
 		#config.read('/root/oovoo/config/app.conf')
 		sms = ServiceManagementService(config.get('Azure','subscription_id'),config.get('Azure','certificate'))	
 		blobService = getBlobService(config)
@@ -95,23 +95,6 @@ def main(argv):
 		print 'Script timeout ' + str(timeout)
 		return -1
 	return 0
-#Load all data for Maxim
-#Prod after use eat this
-def main1(argv):
-	config = ConfigParser.ConfigParser()
-	config.read([scriptHome + '/config/app.conf'])
-	srv = BlobService('oovooperformancecounters','2o4VfvZTHjH73RECHt8CBbnjRKNy2Y/1aEkWn2/5c/1ai3OzBete19+AEr1PhFKK5xPF/cXVLAXOJNKs8XJSMw==',config.get('Azure','protocol'))
-	#createBlobPrint(srv,'959bf94bc82e4aeb85310ec8297e56e4',config)	
-	marker = None
-        allBlobs =  srv.list_blobs(config.get('Azure','container_name'), '959bf94bc82e4aeb85310ec8297e56e4', marker, None)
-	if len(allBlobs) > 0:
-		for oneBlob in allBlobs:
-			blobData = getSingleBlob(srv, config, oneBlob.name)
-			blobFile = open('./' + oneBlob.name.replace('/','-'),'w')
-			blobFile.write(blobData)
-			blobFile.close()
-			print 'File ' + oneBlob.name + ' saved'
-
 
 	
 if __name__ == '__main__':
