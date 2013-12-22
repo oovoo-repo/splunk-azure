@@ -2,8 +2,15 @@
 import sys
 import ConfigParser
 import os
-splunkHome = os.environ.get('SPLUNK_HOME', '/opt/splunk')
-sys.path.append(splunkHome + '/etc/apps/oovoo')
+scriptHome = os.environ.get('AZURE_SCRIPT_HOME')
+
+if scriptHome == None or scriptHome == '':
+	print 'AZURE_SCRIPT_HOME envinronment variable not found'
+	exit(-1)
+if scriptHome.endswith('/'):
+	scriptHome = scriptHome[:-1]
+
+sys.path.append(scriptHome)
 from azure.storage import BlobService
 from azure.servicemanagement import ServiceManagementService
 import threading
@@ -77,7 +84,7 @@ def main(argv):
 	
 	try:
 		config = ConfigParser.ConfigParser()
-		config.read([splunkHome + '/etc/apps/oovoo/config/app.conf'])
+		config.read(scriptHome + '/config/app.conf'])
 		#config.read('/root/oovoo/config/app.conf')
 		sms = ServiceManagementService(config.get('Azure','subscription_id'),config.get('Azure','certificate'))	
 		blobService = getBlobService(config)
@@ -92,7 +99,7 @@ def main(argv):
 #Prod after use eat this
 def main1(argv):
 	config = ConfigParser.ConfigParser()
-	config.read([splunkHome + '/etc/apps/oovoo/config/app.conf'])
+	config.read([scriptHome + '/config/app.conf'])
 	srv = BlobService('oovooperformancecounters','2o4VfvZTHjH73RECHt8CBbnjRKNy2Y/1aEkWn2/5c/1ai3OzBete19+AEr1PhFKK5xPF/cXVLAXOJNKs8XJSMw==',config.get('Azure','protocol'))
 	#createBlobPrint(srv,'959bf94bc82e4aeb85310ec8297e56e4',config)	
 	marker = None
